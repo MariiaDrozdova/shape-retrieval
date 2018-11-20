@@ -36,7 +36,7 @@ def init():
 
 def read3D(verticies,surfaces):
     
-    glBegin(3)
+    glBegin(GL_TRIANGLES)
     x = 0
     for surface in surfaces:
         x = x + 1
