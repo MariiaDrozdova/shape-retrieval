@@ -35,7 +35,7 @@ def init():
        
     xrot = 0.0                          # Величина вращения по оси x = 0
     yrot = 0.0                          # Величина вращения по оси y = 0
-    ambient = (1.0, 1.0, 1.0, 10)        # Первые три числа - цвет в формате RGB, а последнее - яркость  
+    ambient = (1.0, 1.0, 1.0, 1.0)        # Первые три числа - цвет в формате RGB, а последнее - яркость  
     eye = [0., 0., 0.] 
     center = centers[iteration]
     up = directions[iteration]
@@ -52,7 +52,7 @@ def init():
     glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient) # Определяем текущую модель освещения
     glEnable(GL_LIGHTING)                           # Включаем освещение
     glEnable(GL_LIGHT0)                             # Включаем один источник света
-    glLightfv(GL_LIGHT0, GL_POSITION, lightpos)     # Определяем положение источника света
+    
 
 
 def draw():  
@@ -77,8 +77,10 @@ def draw():
         glClear(GL_COLOR_BUFFER_BIT)  
         center = centers[iteration]
         up = directions[iteration]
-        lightpos = (-50*up[0], -50*up[1], -50*up[2])          # Положение источника освещения по осям xyz
+        lightpos = (5000*center[0], 5000*center[1], 5000*center[2])          # Положение источника освещения по осям xyz
+        glLoadIdentity()
         gluLookAt(eye[0] , eye[1], eye[2], center[0], center[1], center[2], up[0], up[1], up[2])
+        glLightfv(GL_LIGHT0, GL_POSITION, lightpos)     # Определяем положение источника света
         res = [0,0,0]
         for vert in verticies:
             res = sum(vert, res)
@@ -129,13 +131,17 @@ def draw():
             #print(surface)
             for vertex in surface:
                 #TODO: something with colors, now it is too far from reality
-                glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, (0., 0.5, 0.) )
-                #glColor3ub( 0, 100, 180)            	
-                #glShadeModel(GL_SMOOTH)
+                l = sum(opp(verticies[vertex]), lightpos)
+                cos_theta = (vertex_normalized[vertex][0]*l[0] + vertex_normalized[vertex][1]*l[1] + vertex_normalized[vertex][2]*l[2])/(dist(vertex_normalized[vertex], [0.,0.,0.])*dist(l, [0.,0.,0.]))
+                glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, (1., 0., 1., 1) )
+                #glColor4f(.23,.78,.32,100.0);            	
+                
                 #GL_FLAT
                 #print(vertex_normalized[vertex])
-                glNormal3fv(vertex_normalized[vertex])
-                glVertex3fv(verticies[vertex])        	
+                #print(cos_theta)
+                glNormal3fv(div(vertex_normalized[vertex],1./cos_theta))
+                glVertex3fv(verticies[vertex]) 
+                #glShadeModel(GL_SMOOTH)       	
         glEnd()
 
 
