@@ -121,7 +121,7 @@ class Sphere:
 			new_energy = self.energy
 		
 
-	
+	# not used 
 def generateRandomSphereVector():
 	u = random.random()
 	v = random.random()

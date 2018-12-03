@@ -1,3 +1,4 @@
+# not used
 from OpenGL.GL import *
 from OpenGL.arrays import vbo
 #from OpenGLContext.arrays import *
