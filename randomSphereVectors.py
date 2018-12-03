@@ -92,8 +92,6 @@ class Sphere:
 		for i in range(len(self.verts)):
 			vert_to_center_min = dist(self.verts[i], self.centers[0])
 			center_n = 0
-			#print(vert_to_center_min)
-			#print()
 			for j in range(1, len(self.centers)):
 				vert_to_center = dist(self.verts[i], self.centers[j])
 				if (vert_to_center < vert_to_center_min):

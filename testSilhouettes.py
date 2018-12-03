@@ -11,35 +11,31 @@ global file_name
 global centers
 global directions 
 global iteration
-# Объявляем все глобальные переменные
-global xrot         # Величина вращения по оси x
-global yrot         # Величина вращения по оси y
-global ambient      # рассеянное освещение
-global greencolor   # Цвет елочных иголок
-global treecolor    # Цвет елочного стебля
-global lightpos     # Положение источника освещения
+# global variables
+global xrot         # angle of rotation about x
+global yrot         # angle of rotation about y
+global ambient      # ambient colour
+global lightpos     # light position
 
 
 # Процедура инициализации
 def init():
-    global xrot         # Величина вращения по оси x
-    global yrot         # Величина вращения по оси y
-    global ambient      # Рассеянное освещение
-    global greencolor   # Цвет елочных иголок
-    global treecolor    # Цвет елочного ствола
-    global lightpos     # Положение источника освещения 
+    global xrot         # angle of rotation about x
+    global yrot         # angle of rotation about y
+    global ambient      # ambient colour
+
 
     global centers
     global directions
     global iteration
        
-    xrot = 0.0                          # Величина вращения по оси x = 0
-    yrot = 0.0                          # Величина вращения по оси y = 0
-    ambient = (1.0, 1.0, 1.0, 1.0)        # Первые три числа - цвет в формате RGB, а последнее - яркость  
+    xrot = 0.0                          # angle of rotation about x
+    yrot = 0.0                          # angle of rotation about y
+    ambient = (1.0, 1.0, 1.0, 1.0)        # RGB + brightness
     eye = [0., 0., 0.] 
     center = centers[iteration]
     up = directions[iteration]
-    lightpos = (-50*up[0], -50*up[1], -50*up[2])          # Положение источника освещения по осям xyz
+    lightpos = (-50*up[0], -50*up[1], -50*up[2])          # position on xyz
     gluLookAt(eye[0] , eye[1], eye[2], center[0], center[1], center[2], up[0], up[1], up[2])
 
     #lightpos = (-50*up[0]*(-center[0] + eye[0]), -50*up[1]*(-center[1]+ eye[0]), -50*up[2]*(-center[2]+ eye[0]))          # Положение источника освещения по осям xyz
@@ -52,7 +48,7 @@ def init():
     glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient) # Model of light
     glEnable(GL_LIGHTING)                           # Turn on all the lights
     glEnable(GL_LIGHT0)                             # Turn on the concret light
-    glEnable(GL_DEPTH_TEST)
+    #glEnable(GL_DEPTH_TEST)
     glEnable(GL_CULL_FACE)
     
 
@@ -166,21 +162,13 @@ def draw():
 
     
 
-            #glPopMatrix()                                               # Возвращаем сохраненное положение "камеры"
-                                            # Выводим все нарисованное в памяти на экран
+            #glPopMatrix()                          
             #for i in range(len(centers)):
             eye = [0., 0., 0.]    
-            xrot = 0.0                          # Величина вращения по оси x = 0
-            yrot = 0.0                          # Величина вращения по оси y = 0
-            ambient = (1.0, 1.0, 1.0, 10)        # Первые три числа - цвет в формате RGB, а последнее - яркость
-            
+
             center = centers[iteration]
             up = directions[iteration]
             print(center)
-            lightpos = (-50*up[0], -50*up[1], -50*up[2])          # Положение источника освещения по осям xyz
-    
-            #lightpos = (-50*up[0]*(-center[0] + eye[0]), -50*up[1]*(-center[1]+ eye[0]), -50*up[2]*(-center[2]+ eye[0]))          # Положение источника освещения по осям xyz
-
             #gluLookAt(eye[0] , eye[1], eye[2], center[0], center[1], center[2], up[0], up[1], up[2])
             #glEnable(GL_DEPTH_TEST);
             #glDepthFunc(GL_LESS);
