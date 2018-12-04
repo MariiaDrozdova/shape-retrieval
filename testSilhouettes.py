@@ -48,7 +48,8 @@ def init():
     glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient) # Model of light
     glEnable(GL_LIGHTING)                           # Turn on all the lights
     glEnable(GL_LIGHT0)                             # Turn on the concret light
-    #glEnable(GL_DEPTH_TEST)
+    glEnable(GL_DEPTH_TEST)
+    glDepthFunc(GL_LESS)
     glEnable(GL_CULL_FACE)
     
 
@@ -73,8 +74,6 @@ def draw():
         eye = [0., 0., 0.] 
         for iteration in range(len(centers)):
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-            
-            #
             center = centers[iteration]
             up = directions[iteration]
             lightpos = (5000*center[0], 5000*center[1], 5000*center[2])  
@@ -112,6 +111,7 @@ def draw():
                 normal= [u[1]*v[2] - u[2]*v[1], u[2]*v[0] - u[0]*v[2], u[0]*v[1]-u[1]*v[0]]
 
                 # une tentative a comprendre si dehors ou interieurs
+                
                 s = 0
                 for i in range(3):
                     s = s+normal[i]*verticies[surface[0]][i]
@@ -182,7 +182,7 @@ def draw():
     
             image_array = np.fromstring(data, np.uint8)
             image = image_array.reshape(width, height, 3)
-            scipy.misc.imsave('images/' + filename[7:-4] + '_outfile_' + str(iteration) + '.jpg', image)
+            scipy.misc.imsave('../images/' + filename[10:-4] + '_outfile_' + str(iteration) + '.jpg', image)
     glutDestroyWindow(1)
     if True:
         pass
@@ -215,28 +215,30 @@ def draw():
         glutSwapBuffers()                                           # Выводим все нарисованное в памяти на экран
         """
 def runAll(model_name, centers=0, directions=0):
-	print(model_name)
-	global filename
-	filename = model_name
-	# Здесь начинается выполнение программы
-	# Использовать двойную буферизацию и цвета в формате RGB (Красный, Зеленый, Синий)
-	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB)
-	# Указываем начальный размер окна (ширина, высота)
-	glutInitWindowSize(600, 600)
-	# Указываем начальное положение окна относительно левого верхнего угла экрана
-	glutInitWindowPosition(150, 150)
-	
-	# Инициализация OpenGl
-	glutInit(sys.argv)
-	glutCreateWindow(b"Happy project!")
-	# Определяем процедуру, отвечающую за перерисовку
-	glutDisplayFunc(draw)
-	
-	#glutSpecialFunc(specialkeys)
-	# Вызываем нашу функцию инициализации
-	init()
-	# Запускаем основной цикл
-	glutMainLoop()
+    print(model_name)
+    global filename
+    filename = model_name
+    glutInit(sys.argv)
+    # Здесь начинается выполнение программы
+    # Использовать двойную буферизацию и цвета в формате RGB (Красный, Зеленый, Синий)
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB )
+    # Указываем начальный размер окна (ширина, высота)
+    glutInitWindowSize(600, 600)
+    # Указываем начальное положение окна относительно левого верхнего угла экрана
+    glutInitWindowPosition(150, 150)
+    
+    # Инициализация OpenGl
+    # glutInit(sys.argv)
+    glutCreateWindow(b"Happy project!")
+    init()
+    # Определяем процедуру, отвечающую за перерисовку
+    glutDisplayFunc(draw)
+    
+    #glutSpecialFunc(specialkeys)
+    # Вызываем нашу функцию инициализации
+    
+    # Запускаем основной цикл
+    glutMainLoop()
 
 def execute(fname, centers0, directions0, iteration0, names0):
 	global filename
