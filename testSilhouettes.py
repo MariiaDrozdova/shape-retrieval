@@ -222,35 +222,31 @@ def draw():
         glutSwapBuffers()                                           # Выводим все нарисованное в памяти на экран
         """
 def runAll(model_name, centers=0, directions=0):
-<<<<<<< HEAD
-	print(model_name)
-	global filename
-	filename = model_name
-	# Здесь начинается выполнение программы
-	# Использовать двойную буферизацию и цвета в формате RGB (Красный, Зеленый, Синий)
-	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB)
-	# Указываем начальный размер окна (ширина, высота)
-	glutInitWindowSize(600, 600)
-	# Указываем начальное положение окна относительно левого верхнего угла экрана
-	glutInitWindowPosition(150, 150)
-	
-	# Инициализация OpenGl
-	glutInit(sys.argv)
-	
-	glutCreateWindow(b"Happy project!")
-
-	# Определяем процедуру, отвечающую за перерисовку
-	glutDisplayFunc(draw)
-	
-	#glutSpecialFunc(specialkeys)
-	# Вызываем нашу функцию инициализации
-	init()
-	# Запускаем основной цикл
-	glutMainLoop()
-=======
     print(model_name)
     global filename
     filename = model_name
+    # Здесь начинается выполнение программы
+    # Использовать двойную буферизацию и цвета в формате RGB (Красный, Зеленый, Синий)
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB)
+    # Указываем начальный размер окна (ширина, высота)
+    glutInitWindowSize(600, 600)
+    # Указываем начальное положение окна относительно левого верхнего угла экрана
+    glutInitWindowPosition(150, 150)
+	
+    # Инициализация OpenGl
+    glutInit(sys.argv)
+	
+    glutCreateWindow(b"Happy project!")
+
+    # Определяем процедуру, отвечающую за перерисовку
+    glutDisplayFunc(draw)
+	
+    #glutSpecialFunc(specialkeys)
+    # Вызываем нашу функцию инициализации
+    init()
+    # Запускаем основной цикл
+    glutMainLoop()
+    print(model_name)
     glutInit(sys.argv)
     # Здесь начинается выполнение программы
     # Использовать двойную буферизацию и цвета в формате RGB (Красный, Зеленый, Синий)
@@ -272,7 +268,6 @@ def runAll(model_name, centers=0, directions=0):
     
     # Запускаем основной цикл
     glutMainLoop()
->>>>>>> 7f87de4a0e338af8f744f922214964aa852cc5ab
 
 def execute(fname, centers0, directions0, iteration0, names0):
 	global filename
