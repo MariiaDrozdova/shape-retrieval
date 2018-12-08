@@ -56,7 +56,7 @@ def div(p1, a):
 class Sphere:
 	def __init__(self, d, centers=None, verts=None, faces=None, ):
 		if verts is None:
-			self.verts, self.faces = read_off(open("models/sphere2.off"))
+			self.verts, self.faces = read_off(open("../models/sphere2.off"))
 		else:
 			self.verts = verts
 			self.faces = faces
@@ -82,8 +82,6 @@ class Sphere:
 		
 		res = div(res, len(self.verts))
 		R = dist(sum(self.verts[0], opp(res)), [0,0,0])
-
-			
 
 	def createClusters(self):
 		new_centers = [[0,0,0]]*self.d
@@ -121,7 +119,7 @@ class Sphere:
 			new_energy = self.energy
 		
 
-	
+
 def generateRandomSphereVector():
 	u = random.random()
 	v = random.random()
