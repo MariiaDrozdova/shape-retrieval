@@ -79,11 +79,17 @@ def draw():
             up = directions[iteration]
             lightpos = (5000*center[0], 5000*center[1], 5000*center[2])  
             glLoadIdentity()
-            glEnable(GL_DEPTH_TEST);
+            
             gluLookAt(eye[0] , eye[1], eye[2], 20*center[0], 20*center[1], 20*center[2], up[0], up[1], up[2])
-
+            glPushMatrix()   
+            gluPerspective(10.0, 10.0, 0.01, 10)#gluOrtho2D(-5, 5, -5, 5, 0.1, 10)
+            glMatrixMode(GL_MODELVIEW)
+            #glLoadIdentity()
+            glEnable(GL_DEPTH_TEST)
             glLightfv(GL_LIGHT0, GL_POSITION, lightpos)     # where are the lights
-            #glEnable(GL_CULL_FACE)
+            glEnable(GL_CULL_FACE)
+            glCullFace(GL_FRONT)
+            #glDepthFunc(GL_LESS);
 
 
             res = [0,0,0]
@@ -153,8 +159,9 @@ def draw():
                     #print(cos_theta)
                     glNormal3fv(div(vertex_normalized[vertex],1./cos_theta))
                     glVertex3fv(verticies[vertex]) 
+                    
                 glEnd() 
-                glDepthFunc(GL_LESS);
+                
                     #glShadeModel(GL_SMOOTH)       	
             #glEnd()
             
@@ -228,7 +235,9 @@ def runAll(model_name, centers=0, directions=0):
 	
 	# Инициализация OpenGl
 	glutInit(sys.argv)
+	
 	glutCreateWindow(b"Happy project!")
+
 	# Определяем процедуру, отвечающую за перерисовку
 	glutDisplayFunc(draw)
 	
