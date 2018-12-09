@@ -48,8 +48,7 @@ def init():
     glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient) # Model of light
     glEnable(GL_LIGHTING)                           # Turn on all the lights
     glEnable(GL_LIGHT0)                             # Turn on the concret light
-    glEnable(GL_DEPTH_TEST)
-    glDepthFunc(GL_LESS)
+    #glEnable(GL_DEPTH_TEST)
     glEnable(GL_CULL_FACE)
     
 
@@ -72,22 +71,29 @@ def draw():
         print(filename)
         verticies, surfaces = read_off(open(filename))#73
         eye = [0., 0., 0.] 
-        for iteration in range(len(centers)):
+        #for iteration in range(len(centers)):
+        if True:
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            
+            #
             center = centers[iteration]
             up = directions[iteration]
             lightpos = (5000*center[0], 5000*center[1], 5000*center[2])  
             glLoadIdentity()
             
-            gluLookAt(eye[0] , eye[1], eye[2], 20*center[0], 20*center[1], 20*center[2], up[0], up[1], up[2])
-            glPushMatrix()   
-            gluPerspective(10.0, 10.0, 0.01, 10)#gluOrtho2D(-5, 5, -5, 5, 0.1, 10)
+            #gluLookAt(eye[0] , eye[1], eye[2], 20*center[0], 20*center[1], 20*center[2], up[0], up[1], up[2])
+            #glPushMatrix()   
+            glRotatef(xrot, 1.0, 0.0, 0.0)                              # turning around xrot
+            glRotatef(yrot, 0.0, 1.0, 0.0)                              # turning around yrot
+            gluPerspective(0.0, 0.0, 0.01, 10)#gluOrtho2D(-5, 5, -5, 5, 0.1, 10)
             glMatrixMode(GL_MODELVIEW)
             #glLoadIdentity()
             glEnable(GL_DEPTH_TEST)
             glLightfv(GL_LIGHT0, GL_POSITION, lightpos)     # where are the lights
-            glEnable(GL_CULL_FACE)
-            glCullFace(GL_FRONT)
+            glEnable(GL_POLYGON_OFFSET_FILL);
+            glPolygonOffset(1.0, 1.0);
+            #glEnable(GL_CULL_FACE)
+            #glCullFace(GL_FRONT)
             #glDepthFunc(GL_LESS);
 
 
@@ -117,7 +123,6 @@ def draw():
                 normal= [u[1]*v[2] - u[2]*v[1], u[2]*v[0] - u[0]*v[2], u[0]*v[1]-u[1]*v[0]]
 
                 # une tentative a comprendre si dehors ou interieurs
-                
                 s = 0
                 for i in range(3):
                     s = s+normal[i]*verticies[surface[0]][i]
@@ -183,14 +188,14 @@ def draw():
             #glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE)       
             x, y, width, height = glGetIntegerv(GL_VIEWPORT)
             print("Screenshot viewport:", x, y, width, height)
-            glPixelStorei(GL_PACK_ALIGNMENT, 1)
+            #glPixelStorei(GL_PACK_ALIGNMENT, 1)
 
             data = glReadPixels(x, y, width, height, GL_RGB, GL_UNSIGNED_BYTE)
     
             image_array = np.fromstring(data, np.uint8)
             image = image_array.reshape(width, height, 3)
-            scipy.misc.imsave('../images/' + filename[10:-4] + '_outfile_' + str(iteration) + '.jpg', image)
-    glutDestroyWindow(1)
+            scipy.misc.imsave('images/' + filename[7:-4] + '_outfile_' + str(iteration) + '.jpg', image)
+    #glutDestroyWindow(1)
     if True:
         pass
         #-------------------------------
@@ -221,53 +226,48 @@ def draw():
         glPopMatrix()                                               # Возвращаем сохраненное положение "камеры"
         glutSwapBuffers()                                           # Выводим все нарисованное в памяти на экран
         """
-def runAll(model_name, centers=0, directions=0):
-    print(model_name)
-    global filename
-    filename = model_name
-    # Здесь начинается выполнение программы
-    # Использовать двойную буферизацию и цвета в формате RGB (Красный, Зеленый, Синий)
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB)
-    # Указываем начальный размер окна (ширина, высота)
-    glutInitWindowSize(600, 600)
-    # Указываем начальное положение окна относительно левого верхнего угла экрана
-    glutInitWindowPosition(150, 150)
-	
-    # Инициализация OpenGl
-    glutInit(sys.argv)
-	
-    glutCreateWindow(b"Happy project!")
 
-    # Определяем процедуру, отвечающую за перерисовку
-    glutDisplayFunc(draw)
+# Процедура обработки специальных клавиш
+def specialkeys(key, x, y):
+    global xrot
+    global yrot
+    # Обработчики для клавиш со стрелками
+    if key == GLUT_KEY_UP:      # Клавиша вверх
+        xrot -= 2.0             # Уменьшаем угол вращения по оси X
+    if key == GLUT_KEY_DOWN:    # Клавиша вниз
+        xrot += 2.0             # Увеличиваем угол вращения по оси X
+    if key == GLUT_KEY_LEFT:    # Клавиша влево
+        yrot -= 2.0             # Уменьшаем угол вращения по оси Y
+    if key == GLUT_KEY_RIGHT:   # Клавиша вправо
+        yrot += 2.0             # Увеличиваем угол вращения по оси Y
+
+    glutPostRedisplay()         # Вызываем процедуру перерисовки
+
+def runAll(model_name, centers=0, directions=0):
+	print(model_name)
+	global filename
+	filename = model_name
+	# Execution starts
+	# double buffer and RGB
+	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB)
+
+	glutInitWindowSize(600, 600)
+	# initial position on the screen
+	glutInitWindowPosition(150, 150)
 	
-    #glutSpecialFunc(specialkeys)
-    # Вызываем нашу функцию инициализации
-    init()
-    # Запускаем основной цикл
-    glutMainLoop()
-    print(model_name)
-    glutInit(sys.argv)
-    # Здесь начинается выполнение программы
-    # Использовать двойную буферизацию и цвета в формате RGB (Красный, Зеленый, Синий)
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB )
-    # Указываем начальный размер окна (ширина, высота)
-    glutInitWindowSize(600, 600)
-    # Указываем начальное положение окна относительно левого верхнего угла экрана
-    glutInitWindowPosition(150, 150)
-    
-    # Инициализация OpenGl
-    # glutInit(sys.argv)
-    glutCreateWindow(b"Happy project!")
-    init()
-    # Определяем процедуру, отвечающую за перерисовку
-    glutDisplayFunc(draw)
-    
-    #glutSpecialFunc(specialkeys)
-    # Вызываем нашу функцию инициализации
-    
-    # Запускаем основной цикл
-    glutMainLoop()
+	# Initialization OpenGl
+	glutInit(sys.argv)
+	
+	glutCreateWindow(b"Happy project!")
+
+	# Function for drawing
+	glutDisplayFunc(draw)
+	
+	glutSpecialFunc(specialkeys)
+
+	init()
+	# Main cycle
+	glutMainLoop()
 
 def execute(fname, centers0, directions0, iteration0, names0):
 	global filename
