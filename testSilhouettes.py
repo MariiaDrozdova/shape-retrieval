@@ -36,7 +36,7 @@ def init():
     center = centers[iteration]
     up = directions[iteration]
     lightpos = (-50*up[0], -50*up[1], -50*up[2])          # position on xyz
-    gluLookAt(eye[0] , eye[1], eye[2], center[0], center[1], center[2], up[0], up[1], up[2])
+    #gluLookAt(eye[0] , eye[1], eye[2], center[0], center[1], center[2], up[0], up[1], up[2])
 
     #lightpos = (-50*up[0]*(-center[0] + eye[0]), -50*up[1]*(-center[1]+ eye[0]), -50*up[2]*(-center[2]+ eye[0]))          # Положение источника освещения по осям xyz
 
@@ -48,7 +48,7 @@ def init():
     glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient) # Model of light
     glEnable(GL_LIGHTING)                           # Turn on all the lights
     glEnable(GL_LIGHT0)                             # Turn on the concret light
-    #glEnable(GL_DEPTH_TEST)
+    glEnable(GL_DEPTH_TEST)
     glEnable(GL_CULL_FACE)
     
 
@@ -70,31 +70,55 @@ def draw():
     for filename in names:    
         print(filename)
         verticies, surfaces = read_off(open(filename))#73
-        eye = [0., 0., 0.] 
-        #for iteration in range(len(centers)):
-        if True:
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        eye = [0, 0, 0]
+        for iteration in range(len(centers)):
+            #glClear(GL_DEPTH_BUFFER_BIT)
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
             
             #
             center = centers[iteration]
             up = directions[iteration]
-            lightpos = (5000*center[0], 5000*center[1], 5000*center[2])  
-            glLoadIdentity()
             
-            #gluLookAt(eye[0] , eye[1], eye[2], 20*center[0], 20*center[1], 20*center[2], up[0], up[1], up[2])
+            glLoadIdentity()
+            eye = [0., 0, 0.] 
+            #center = [-.1, -0.1, -0.1]
+            #up = [0.2, 0.2, 0.2]
+            lightpos = (50*center[0], 50*center[1], 50*center[2])  
+            gluPerspective(0, 0.2, 0. , 100 )
+            gluLookAt(eye[0] , eye[1], eye[2], 20*center[0], 20*center[1], 20*center[2], up[0], up[1], up[2])
             #glPushMatrix()   
             glRotatef(xrot, 1.0, 0.0, 0.0)                              # turning around xrot
             glRotatef(yrot, 0.0, 1.0, 0.0)                              # turning around yrot
-            gluPerspective(0.0, 0.0, 0.01, 10)#gluOrtho2D(-5, 5, -5, 5, 0.1, 10)
-            glMatrixMode(GL_MODELVIEW)
+            #gluPerspective(0.0, 0.0, 0.01, 10)#gluOrtho2D(-5, 5, -5, 5, 0.1, 10)
+            #glMatrixMode(GL_MODELVIEW)
             #glLoadIdentity()
-            glEnable(GL_DEPTH_TEST)
+
             glLightfv(GL_LIGHT0, GL_POSITION, lightpos)     # where are the lights
-            glEnable(GL_POLYGON_OFFSET_FILL);
-            glPolygonOffset(1.0, 1.0);
+            #glEnable(GL_POLYGON_OFFSET_FILL);
+            #glPolygonOffset(1.0, 1.0);
+            #glEnable(GL_CULL_FACE)
+            #gluPerspective(0, 0.2, 0.1 , 10 )
             #glEnable(GL_CULL_FACE)
             #glCullFace(GL_FRONT)
-            #glDepthFunc(GL_LESS);
+            ##glClearDepth(0.0)
+            ##GL_DEPTH_BIAS=0
+            ##GL_DEPTH_BITS=24
+            ##GL_DEPTH_CLEAR_VALUE=2147482496
+            ##GL_DEPTH_FUNC=GL_LESS
+            ##GL_DEPTH_RANGE={0, 1}
+            ##GL_DEPTH_SCALE=1
+            ##GL_DEPTH_TEST=True
+            glEnable(GL_DEPTH_TEST)
+            glDepthFunc(GL_LESS)
+            #glDepthFunc(GL_ALWAYS)
+            #glDepthMask(GL_FALSE)
+            glEnable(GL_NORMALIZE)
+            #glDepthFunc(GL_NEVER)
+            #glDisable(GL_CULL_FACE) 
+            #glFrontFace(GL_CW)
+            #glDepthMask(GL_TRUE)
+            #glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, 600, 600, 0, GL_DEPTH_STENCIL, 	       GL_UNSIGNED_INT_24_8, None)
+            #glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, 2, 0);
 
 
             res = [0,0,0]
@@ -147,25 +171,31 @@ def draw():
                 for z in range(3):
                     vertex_normalized[j][z] = vertex_normalized[j][z]/norm
 
-
+            x = 0
             for surface in surfaces:
                 #print(surface)
+                #glEnable(GL_DEPTH_TEST)
+                #glDepthFunc(GL_LESS)
                 glBegin(GL_TRIANGLE_FAN);
+                x = x + 1
                 for vertex in surface:
                     #TODO: something with colors, now it is too far from reality
                     l = sum(opp(verticies[vertex]), lightpos) #lighpos - vector to vertex = vector from vertex to lights
                     cos_theta = (vertex_normalized[vertex][0]*l[0] + vertex_normalized[vertex][1]*l[1] + vertex_normalized[vertex][2]*l[2])/(dist(vertex_normalized[vertex], [0.,0.,0.])*dist(l, [0.,0.,0.]))
-                    glMaterialfv(GL_FRONT_AND_BACK,GL_DIFFUSE, (1., 0., 1., 1) )
+                    #glMaterialfv(GL_FRONT_AND_BACK,GL_DIFFUSE, (1., 0., 1., 1) )
                     #glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR, (1., 0., 1., 1) )
-                    glColor4f(.23,.78,.32,100.0);            	
-                
+                    #print(x)
+                    #glColor3f(x*1.0/1000,x*1.0/1000,0.0);           	
+                    
                     #GL_FLAT
                     #print(vertex_normalized[vertex])
                     #print(cos_theta)
                     glNormal3fv(div(vertex_normalized[vertex],1./cos_theta))
                     glVertex3fv(verticies[vertex]) 
+                    glColor3f(255.0,255.0,0.0)
                     
                 glEnd() 
+                
                 
                     #glShadeModel(GL_SMOOTH)       	
             #glEnd()
@@ -176,15 +206,11 @@ def draw():
 
             #glPopMatrix()                          
             #for i in range(len(centers)):
-            eye = [0., 0., 0.]    
-
-            center = centers[iteration]
-            up = directions[iteration]
-            print(center)
             #gluLookAt(eye[0] , eye[1], eye[2], center[0], center[1], center[2], up[0], up[1], up[2])
             #glEnable(GL_DEPTH_TEST);
             #glDepthFunc(GL_LESS);
             glutSwapBuffers()   
+            
             #glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE)       
             x, y, width, height = glGetIntegerv(GL_VIEWPORT)
             print("Screenshot viewport:", x, y, width, height)
@@ -195,7 +221,7 @@ def draw():
             image_array = np.fromstring(data, np.uint8)
             image = image_array.reshape(width, height, 3)
             scipy.misc.imsave('images/' + filename[7:-4] + '_outfile_' + str(iteration) + '.jpg', image)
-    #glutDestroyWindow(1)
+    glutDestroyWindow(1)
     if True:
         pass
         #-------------------------------
@@ -249,7 +275,7 @@ def runAll(model_name, centers=0, directions=0):
 	filename = model_name
 	# Execution starts
 	# double buffer and RGB
-	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB)
+	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH)
 
 	glutInitWindowSize(600, 600)
 	# initial position on the screen
