@@ -15,10 +15,12 @@ def get_gabor_value(u, v, sigma_x, sigma_y, w0, theta):
     return res 
 
 def get_gabor_filter(theta, side_length = 600, line_width = 0.02, lamb = 0.2, w = 0.13):
-    sigma_x = line_width * w
+    sigma_x = line_width * side_length * 0.2
     sigma_y = sigma_x / lamb 
     u = np.arange(-side_length/2, side_length/2)
+    u = u/side_length
     v = np.arange(-side_length/2, side_length/2)
+    v = v/side_length
     g = np.zeros([side_length,side_length])
     for i in range (side_length):
         for j in range (side_length):
